@@ -32,6 +32,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(api.router, prefix="/api/v1")
+app.include_router(api.router, prefix="/api")
 
 (settings.public_path / "json").mkdir(parents=True, exist_ok=True)
 (settings.public_path / "store").mkdir(parents=True, exist_ok=True)
