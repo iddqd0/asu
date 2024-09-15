@@ -66,29 +66,25 @@ immediately without rebuilding.
 ## Run your own server
 
 For security reasons each build happens inside a container so that one build
-can't affect another build. For this to work a Podman container runs an API
+can't affect another build. For this to work a Docker container runs an API
 service so workers can themselfs execute builds inside containers.
 
-Please install Podman and test if it works:
+Please install Docker and test if it works:
 
-    podman run --rm -it docker.io/library/alpine:latest
+    docker run --rm -it docker.io/library/alpine:latest
 
-Once Podman works, install `podman-compose`:
-
-    pip install podman-compose
-
-Now it's possible to run all services via `podman-compose`:
+Now it's possible to run all services via `docker-compose`:
 
     # where to store images and json files
     echo "PUBLIC_PATH=$(pwd)/public" > .env
-    # absolute path to podman socket mounted into worker containers
-    echo "CONTAINER_SOCK=/run/user/1001/podman/podman.sock" >> .env
-    podman-compose up -d
+    # absolute path to docker socket mounted into worker containers
+    echo "CONTAINER_SOCK=/run/docker.sock" >> .env
+    docker compose up -d
 
-This will start the server, the Podman API container and two workers. The first
+This will start the server, the Docker API container and two workers. The first
 run needs a few minutes since available packages are parsed from the upstream
 server. Once the server is running, it's possible to request images via the API
-on `http://localhost:8000`. Modify `podman-compose.yml` to change the port.
+on `http://localhost:8000`. Modify `docker-compose.yml` to change the port.
 
 ### Production
 
@@ -112,8 +108,8 @@ the dependencies:
 
 #### Running a worker
 
-    # podman unix socket (not path), no need to mount anything
-    export CONTAINER_HOST=unix:///run/user/1001/podman/podman.sock
+    # docker unix socket (not path), no need to mount anything
+    export CONTAINER_HOST=unix:///run/docker.sock
     poetry run rq worker
 
 #### Update targets

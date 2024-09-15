@@ -2,7 +2,7 @@ import os
 import tempfile
 from pathlib import Path
 
-from podman import PodmanClient
+from docker import DockerClient
 
 from asu.build_request import BuildRequest
 from asu.util import (
@@ -12,7 +12,7 @@ from asu.util import (
     get_container_version_tag,
     get_file_hash,
     get_packages_hash,
-    get_podman,
+    get_docker,
     get_request_hash,
     get_str_hash,
     parse_packages_versions,
@@ -136,17 +136,17 @@ def test_check_manifest():
     )
 
 
-def test_get_podman():
-    podman = get_podman()
-    assert isinstance(podman, PodmanClient)
+def test_get_docker():
+    docker = get_docker()
+    assert isinstance(docker, DockerClient)
 
 
 def test_run_container():
-    podman = get_podman()
-    podman.images.pull("ghcr.io/openwrt/imagebuilder:testtarget-testsubtarget-v1.2.3")
+    docker = get_docker()
+    docker.images.pull("ghcr.io/openwrt/imagebuilder:testtarget-testsubtarget-v1.2.3")
 
     returncode, stdout, stderr = run_container(
-        podman,
+        docker,
         "ghcr.io/openwrt/imagebuilder:testtarget-testsubtarget-v1.2.3",
         ["make", "info"],
     )

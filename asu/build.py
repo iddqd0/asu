@@ -17,7 +17,7 @@ from asu.util import (
     fingerprint_pubkey_usign,
     get_container_version_tag,
     get_packages_hash,
-    get_podman,
+    get_docker,
     get_request_hash,
     parse_manifest,
     report_error,
@@ -48,9 +48,9 @@ def build(build_request: BuildRequest, job=None):
 
     log.debug(f"Building {build_request}")
 
-    podman = get_podman()
+    docker = get_docker()
 
-    log.debug(f"Podman version: {podman.version()}")
+    log.debug(f"Docker version: {docker.version()}")
 
     container_version_tag = get_container_version_tag(build_request.version)
     log.debug(
@@ -60,11 +60,11 @@ def build(build_request: BuildRequest, job=None):
     image = f"{settings.base_container}:{build_request.target.replace('/', '-')}-{container_version_tag}"
 
     log.info(f"Pulling {image}...")
-    podman.images.pull(image)
+    docker.images.pull(image)
     log.info(f"Pulling {image}... done")
 
     returncode, job.meta["stdout"], job.meta["stderr"] = run_container(
-        podman, image, ["make", "info"]
+        docker, image, ["make", "info"]
     )
 
     job.save_meta()
@@ -154,7 +154,7 @@ def build(build_request: BuildRequest, job=None):
         )
 
     returncode, job.meta["stdout"], job.meta["stderr"] = run_container(
-        podman,
+        docker,
         image,
         [
             "make",
@@ -217,7 +217,7 @@ def build(build_request: BuildRequest, job=None):
         )
 
     returncode, job.meta["stdout"], job.meta["stderr"] = run_container(
-        podman,
+        docker,
         image,
         job.meta["build_cmd"],
         mounts=mounts,
@@ -265,7 +265,7 @@ def build(build_request: BuildRequest, job=None):
     if Path(build_key).is_file():
         log.info(f"Signing images with key {build_key}")
         returncode, job.meta["stdout"], job.meta["stderr"] = run_container(
-            podman,
+            docker,
             image,
             [
                 "bash",
