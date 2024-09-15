@@ -3,7 +3,7 @@ volumes:
 
 services:
   server:
-    pull_policy: missing
+    pull_policy: build
     image: "asu:latest"
     build:
       context: ./
@@ -17,7 +17,7 @@ services:
       - redis
 
   worker:
-    pull_policy: missing
+    pull_policy: build
     image: "asu:latest"
     build:
       context: ./
@@ -28,7 +28,7 @@ services:
       - CONTAINER_HOST=unix://$CONTAINER_SOCK
       - REDIS_URL=redis://redis/
     volumes:
-      - $PUBLIC_PATH:$PUBLIC_PATH:rw
+      - $PUBLIC_PATH:/app/public:rw
       - $CONTAINER_SOCK:$CONTAINER_SOCK:rw
     depends_on:
       - redis

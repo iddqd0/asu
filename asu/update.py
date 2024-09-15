@@ -23,6 +23,11 @@ def update_targets(version):
     """
     branch_data = get_branch(version)
     branch_name = branch_data["name"]
+
+    if not "path" in branch_data:
+        log.warning("No path for %s", version)
+        return
+
     version_path = branch_data["path"].format(version=version)
     targets = requests.get(settings.upstream_url + f"/{version_path}/.targets.json")
 
