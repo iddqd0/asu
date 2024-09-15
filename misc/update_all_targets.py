@@ -2,7 +2,7 @@ from requests import Session
 
 session = Session()
 
-asu_url = "http://localhost:5001"
+asu_url = "http://localhost:8000"
 
 
 def reload_all():
