@@ -274,10 +274,8 @@ def run_container(
 
     returncode = container.wait()
 
-    delimiter = b"\n"
-
-    stdout = delimiter.join(container.logs(stdout=True, stderr=False)).decode("utf-8")
-    stderr = delimiter.join(container.logs(stdout=False, stderr=True)).decode("utf-8")
+    stdout = container.logs(stdout=True, stderr=False).decode("utf-8")
+    stderr = container.logs(stdout=False, stderr=True).decode("utf-8")
 
     logging.debug(f"returncode: {returncode}")
     logging.debug(f"stdout: {stdout}")
